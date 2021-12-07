@@ -92,7 +92,7 @@ def get_train_test_targets(targets_filename, partition):
     for step in ('train', 'test'):
         step_IDs = partition[step]
 
-        # ## `xarray` supports vectorized indexing
+        # `xarray` supports vectorized indexing
         step_da = params_da.sel(id=step_IDs)
         step_targets = dict(zip(step_da.get_index('id'), step_da.values))
 

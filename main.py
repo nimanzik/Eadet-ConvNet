@@ -16,7 +16,7 @@ from torchsummary import summary
 from config import read_config
 from data import get_train_test_partition, get_train_test_targets, \
     CustomDataset
-from jobs import train_job, evaluate_job, test_job
+from jobs import train, evaluate, test
 from model import MultiTaskConvNet
 
 
@@ -152,12 +152,12 @@ def main():
     train_costs, test_costs = [], []
     for epoch in range(1, args.epochs+1):
         # Training step
-        train_cost = train_job(
+        train_cost = train(
             model, optimizer, class_criterion, bbox_criterion,
             train_loader, device, epoch, args)
 
         # Evaluation step
-        test_cost = evaluate_job(
+        test_cost = evaluate(
             model, class_criterion, bbox_criterion, test_loader, device)
 
         print('\nTrain-set epoch cost : {:.9f}'.format(train_cost))
@@ -184,7 +184,7 @@ def main():
 
     # Save model predictions
     if args.test_model:
-        predictions, groundtruth = test_job(model, test_loader, device, args)
+        predictions, groundtruth = test(model, test_loader, device, args)
         predictions.to_netcdf(fstem_dated + '_pred.nc')
         groundtruth.to_netcdf(fstem_dated + '_true.nc')
 
