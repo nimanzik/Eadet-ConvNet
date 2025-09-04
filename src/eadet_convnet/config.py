@@ -1,9 +1,10 @@
+import pathlib
 from os import path as op
 
 from pyrocko.guts import Object, String
 
 
-guts_prefix = 'pf'
+guts_prefix = "pf"
 
 
 class HasPaths(Object):
@@ -30,20 +31,21 @@ class Path(String):
 
 
 class TrainingDatasetConfig(HasPaths):
-    images_dirname = Path.T(
-        help='Inputs -> Directory name where images are stored')
+    images_dirname = Path.T(help="Inputs -> Directory name where images are stored")
 
     norm_params_filename = Path.T(
-        help='Targets -> File with source parameters normalized')
+        help="Targets -> File with source parameters normalized"
+    )
 
     images_paths_pattern = String.T(
-        default='*.nc',
-        help='Images pathnames pattern containing shell-style wild cards')
+        default="*.nc",
+        help="Images pathnames pattern containing shell-style wild cards",
+    )
 
     images_filename_tmpl = String.T(
-        default='%(event_name)s.nc',
-        help='Images filename template containing '
-             '"%(event_name)s" placeholder')
+        default="%(event_name)s.nc",
+        help='Images filename template containing "%(event_name)s" placeholder',
+    )
 
 
 def read_config(path_to_config):
@@ -60,7 +62,7 @@ def read_config(path_to_config):
     relpath = pathlib.Path(config.get_relpath())
 
     # Set path attributes to full path
-    for attr_name in ('images_dirname', 'norm_params_filename'):
+    for attr_name in ("images_dirname", "norm_params_filename"):
         # Create full path as PosixPath
         p = relpath.joinpath(getattr(config, attr_name))
         setattr(config, attr_name, p.as_posix())

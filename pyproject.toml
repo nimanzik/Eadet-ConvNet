@@ -1,0 +1,25 @@
+[project]
+name = "eadet-convnet"
+version = "0.1.0"
+description = "Earthquake Detection in DAS Fibre-Optic Data Using Object-Detection Deep Learning"
+readme = "README.md"
+authors = [
+    { name = "Nima Nooshiri", email = "nima.nooshiri@gmail.com" }
+]
+requires-python = ">=3.9"
+dependencies = [
+    "numpy==1.22.3",
+    "pyrocko==2022.4.28",
+    "torch==1.11.0",
+    "xarray==2022.3.0",
+]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.3.0",
+    "ruff>=0.12.12",
+]
