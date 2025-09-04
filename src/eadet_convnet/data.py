@@ -12,8 +12,7 @@ from torch.utils.data import Dataset
 g_image_dtype = torch.float32
 
 
-def get_train_test_partition(
-        data_paths_pattern, train_split_ratio, random_split):
+def get_train_test_partition(data_paths_pattern, train_split_ratio, random_split):
     """
     Parameters
     ----------
@@ -52,10 +51,9 @@ def get_train_test_partition(
         random.shuffle(ID_list)
 
     n_data = len(ID_list)
-    n_train = int(train_split_ratio*n_data)   # Train/dev splitting
+    n_train = int(train_split_ratio * n_data)  # Train/dev splitting
 
-    partition = {'train': ID_list[:n_train],
-                 'test': ID_list[n_train:]}
+    partition = {"train": ID_list[:n_train], "test": ID_list[n_train:]}
 
     return partition
 
@@ -89,12 +87,12 @@ def get_train_test_targets(targets_filename, partition):
     params_da = xr.load_dataarray(targets_filename)
 
     a = []
-    for step in ('train', 'test'):
+    for step in ("train", "test"):
         step_IDs = partition[step]
 
         # `xarray` supports vectorized indexing
         step_da = params_da.sel(id=step_IDs)
-        step_targets = dict(zip(step_da.get_index('id'), step_da.values))
+        step_targets = dict(zip(step_da.get_index("id"), step_da.values))
 
         a.append(step_targets)
 

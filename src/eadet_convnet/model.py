@@ -6,7 +6,8 @@ from torch.nn.functional import relu
 
 
 def build_conv_block(
-        channels, conv_kernels, conv_paddings, pool_kernels, pool_paddings):
+    channels, conv_kernels, conv_paddings, pool_kernels, pool_paddings
+):
     """
     Parameters
     ----------
@@ -35,30 +36,32 @@ def build_conv_block(
     for ilayer in range(nlayers):
         counter = ilayer + 1
         conv_block.add_module(
-            'conv{}'.format(counter),
+            "conv{}".format(counter),
             nn.Conv2d(
                 in_channels=channels[ilayer],
-                out_channels=channels[ilayer+1],
+                out_channels=channels[ilayer + 1],
                 kernel_size=conv_kernels[ilayer],
-                padding=conv_paddings[ilayer]))
+                padding=conv_paddings[ilayer],
+            ),
+        )
 
         conv_block.add_module(
-            'bnorm{}'.format(counter),
-            nn.BatchNorm2d(num_features=channels[ilayer+1]))
+            "bnorm{}".format(counter), nn.BatchNorm2d(num_features=channels[ilayer + 1])
+        )
 
         conv_block.add_module(
-            'pool{}'.format(counter),
+            "pool{}".format(counter),
             nn.MaxPool2d(
-                kernel_size=pool_kernels[ilayer],
-                padding=pool_paddings[ilayer]))
+                kernel_size=pool_kernels[ilayer], padding=pool_paddings[ilayer]
+            ),
+        )
 
-        conv_block.add_module('relu{}'.format(counter), nn.ReLU())
+        conv_block.add_module("relu{}".format(counter), nn.ReLU())
 
     return conv_block
 
 
 def calc_convlayer_outshape(conv2d_layer, in_shape):
-
     def f(d, k, s, p):
         return int(np.floor((d + (2 * p) - k) / s)) + 1
 
@@ -72,14 +75,15 @@ def calc_convlayer_outshape(conv2d_layer, in_shape):
 
 
 def calc_convblock_outshape(conv_block, in_shape, nconv_layers):
-
     conv_inshape = in_shape
     for ilayer in range(nconv_layers):
         conv_outshape = calc_convlayer_outshape(
-            conv_block._modules[f'conv{ilayer+1}'], conv_inshape)
+            conv_block._modules[f"conv{ilayer + 1}"], conv_inshape
+        )
 
         pool_outshape = calc_convlayer_outshape(
-            conv_block._modules[f'pool{ilayer+1}'], conv_outshape)
+            conv_block._modules[f"pool{ilayer + 1}"], conv_outshape
+        )
 
         conv_inshape = pool_outshape
 
@@ -90,8 +94,7 @@ class MultiTaskConvNet(nn.Module):
     def __init__(self, conv_block, in_shape, nconv_layers):
         super().__init__()
         self.conv_block = conv_block
-        convblock_outshape = calc_convblock_outshape(
-            conv_block, in_shape, nconv_layers)
+        convblock_outshape = calc_convblock_outshape(conv_block, in_shape, nconv_layers)
 
         self.class_fc1 = nn.Linear(convblock_outshape, 512)
         self.class_fc2 = nn.Linear(512, 1)
